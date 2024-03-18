@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  localstack:
+    image: localstack/localstack:latest
+    ports:
+      - "4566:4566"
+      - "4571:4571"
+    environment:
+      SERVICES: dynamodb,es
+      DATA_DIR: /tmp/localstack/data
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack
+    networks:
+      - localstack-net
+
+  app:
+    build: .
+    environment:
+      JWT_KEY: "${JWT_KEY}"
+    depends_on:
+      - localstack
+    networks:
+      - localstack-net
+
+networks:
+  localstack-net:
