@@ -70,7 +70,6 @@ func (repo *ElasticSearchRepository) EnsureElasticsearchSetup() {
 		}
 	}`
 
-	// Check if index exists
 	res, err := repo.EsClient.Indices.Exists([]string{indexName})
 	if err != nil || res.StatusCode == 404 {
 		res, err = repo.EsClient.Indices.Create(
@@ -96,7 +95,7 @@ func (repo *ElasticSearchRepository) InsertUserES(user models.UserDetailsES) err
 	res, err := repo.EsClient.Index(
 		"users",
 		strings.NewReader(string(userJSON)),
-		repo.EsClient.Index.WithDocumentID(user.UserID), // Using UserID as the document ID
+		repo.EsClient.Index.WithDocumentID(user.UserID),
 		repo.EsClient.Index.WithRefresh("true"),
 	)
 	if err != nil {
@@ -116,7 +115,7 @@ func (repo *ElasticSearchRepository) GetUserByID(userID string) (models.UserDeta
 
 	res, err := repo.EsClient.Get(
 		"users",
-		userID, // The document ID, which is the UserID in this case
+		userID,
 	)
 	if err != nil {
 		// Handle the error
@@ -217,7 +216,6 @@ func (repo *ElasticSearchRepository) SearchUsers(currentUserLocation models.User
 	query.AddAgeRangeFilter(discover.MinAge, discover.MaxAge)
 	query.AddGeoDistanceFilter(currentUserLocation, discover.MaxLocation)
 
-	// Encode the query into JSON
 	if err := json.NewEncoder(&buf).Encode(query); err != nil {
 		return nil, fmt.Errorf("error encoding query: %v", err)
 	}
@@ -241,14 +239,12 @@ func (repo *ElasticSearchRepository) SearchUsers(currentUserLocation models.User
 		return nil, fmt.Errorf("[%s] %s: %s", res.Status(), e["error"].(map[string]interface{})["type"], e["error"].(map[string]interface{})["reason"])
 	}
 
-	// Parse the response
 	var r map[string]any
 	if err = json.NewDecoder(res.Body).Decode(&r); err != nil {
 		return nil, fmt.Errorf("error parsing the response body: %s", err)
 	}
 	fmt.Printf("Successful query. Number of hits: %d\n", int(r["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"].(float64)))
 
-	// Deserialize the hits into model
 	var users []models.UserDetailsES
 	for _, hit := range r["hits"].(map[string]any)["hits"].([]any) {
 		var user models.UserDetailsES

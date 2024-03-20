@@ -170,7 +170,7 @@ func (repo *DynamoDBRepository) GetSwipedUserIDs(userID string) ([]string, error
 		ExpressionAttributeNames:  expr.Names(),
 		ExpressionAttributeValues: expr.Values(),
 		KeyConditionExpression:    expr.KeyCondition(),
-		ProjectionExpression:      aws.String("SwipedUserID"), // Only return the SwipedUserID attribute
+		ProjectionExpression:      aws.String("SwipedUserID"),
 	}
 
 	result, err := repo.Client.Query(queryInput)
@@ -178,7 +178,6 @@ func (repo *DynamoDBRepository) GetSwipedUserIDs(userID string) ([]string, error
 		return nil, err
 	}
 
-	// Collect and return the SwipedUserIDs
 	var swipedUserIDs []string
 	for _, item := range result.Items {
 		var swipe models.Swipe
