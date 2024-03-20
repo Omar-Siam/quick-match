@@ -64,7 +64,7 @@ func (repo *DynamoDBRepository) GetUserByEmail(email string) (*models.UserDetail
 	}
 
 	if len(result.Items) == 0 {
-		return nil, nil // UserDetails not found
+		return nil, nil
 	}
 
 	var user models.UserDetails
@@ -149,7 +149,7 @@ func (repo *DynamoDBRepository) CheckSwipeMatch(swipedUserID, currentUserID stri
 			return false, err
 		}
 
-		if swipe.Preference { // Assuming Swipe struct has a Preference field of type bool
+		if swipe.Preference {
 			return true, nil // Found a match
 		}
 	}
