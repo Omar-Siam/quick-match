@@ -43,7 +43,6 @@ func main() {
 	dd := util.NewDiscoverService(dc, esc)
 	r.Handle("/discover", authentication.JWTMiddleware(discover.DiscoverUserInsert(dd))).Methods("POST")
 
-	// Server Setup
 	server := &http.Server{
 		Addr:         ":" + port,
 		Handler:      r,

@@ -16,7 +16,7 @@ func NewBcryptPasswordService() *BcryptPasswordService {
 func (s *BcryptPasswordService) GenerateHashedPassword(unhashedPassword string) (string, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(unhashedPassword), bcrypt.DefaultCost)
 	if err != nil {
-		return "", err // Ensure you handle this error appropriately
+		return "", err
 	}
 	return string(hashedPassword), nil
 }

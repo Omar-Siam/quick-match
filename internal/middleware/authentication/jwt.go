@@ -28,7 +28,6 @@ func JWTMiddleware(next http.Handler) http.Handler {
 		}
 		ctx := context.WithValue(r.Context(), "UserID", claims.UserID)
 
-		// Call the next handler, passing the updated context
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
