@@ -118,13 +118,11 @@ func (repo *ElasticSearchRepository) GetUserByID(userID string) (models.UserDeta
 		userID,
 	)
 	if err != nil {
-		// Handle the error
 		return user, err
 	}
 	defer res.Body.Close()
 
 	if res.IsError() {
-		// Handle the error, possibly the user not found
 		return user, fmt.Errorf("Error fetching user with ID %s: %s", userID, res.String())
 	}
 
@@ -133,7 +131,6 @@ func (repo *ElasticSearchRepository) GetUserByID(userID string) (models.UserDeta
 		return user, fmt.Errorf("Error parsing the response body: %s", err)
 	}
 
-	// Extract the source which contains the user data
 	if source, found := r["_source"]; found {
 		if err := mapstructure.Decode(source, &user); err != nil {
 			return user, fmt.Errorf("Error decoding source into user model: %v", err)
